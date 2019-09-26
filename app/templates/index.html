@@ -1,5 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <p>Index content...</p>
+    <h1>Welcome, {{ current_user.username }}!</h1>
+
+    <table style="width:100%">
+        <tr>
+            <th>Account</th>
+            <th>Balance</th>
+        </tr>
+        {% for account in accounts %}
+        <tr>
+            <td><a href="#">{{ account.name }}</a></td>
+            <td>{{ account.balance }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
 {% endblock %}

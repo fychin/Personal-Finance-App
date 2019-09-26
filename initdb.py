@@ -12,7 +12,7 @@ conn = sqlite3.connect(db_file)
 cur = conn.cursor()
 
 # Initialize database
-sql_create_users_table = """CREATE TABLE users (
+sql_create_users_table = """CREATE TABLE user (
                              id INTEGER PRIMARY KEY AUTOINCREMENT,
                              name TEXT NOT NULL UNIQUE,
                              password TEXT NOT NULL,
@@ -20,13 +20,13 @@ sql_create_users_table = """CREATE TABLE users (
                              role TEXT CHECK( role IN ('admin','user') ) NOT NULL DEFAULT 'user'
                          );"""
 
-sql_create_accounts_table = """CREATE TABLE accounts (
+sql_create_accounts_table = """CREATE TABLE account (
                                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
                                 name TEXT NOT NULL,
                                 balance REAL 
                             );"""
 
-sql_create_txn_table = """CREATE TABLE transactions (
+sql_create_txn_table = """CREATE TABLE transaction (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             type TEXT CHECK( type IN ( 'expense','income' ) ) NOT NULL,
                             title TEXT NOT NULL,
@@ -36,17 +36,17 @@ sql_create_txn_table = """CREATE TABLE transactions (
                        );"""
 
 cur.execute(sql_create_users_table)
-cur.execute("INSERT INTO users (name,password,email,role) VALUES('admin', 'admin', 'admin@email.com', 'admin');")
+cur.execute("INSERT INTO user (name,password,email,role) VALUES('admin', 'admin', 'admin@email.com', 'admin');")
 conn.commit()
 
 cur.execute(sql_create_accounts_table)
-cur.execute("INSERT INTO accounts (name,balance) VALUES('Cash', '322.50');")
-cur.execute("INSERT INTO accounts (name,balance) VALUES('DBS Savings', '1250.86');")
+cur.execute("INSERT INTO account (name,balance) VALUES('Cash', '322.50');")
+cur.execute("INSERT INTO account (name,balance) VALUES('DBS Savings', '1250.86');")
 conn.commit()
 
 cur.execute(sql_create_txn_table)
-cur.execute("INSERT INTO transactions (type,title,description,account_id) VALUES('expense', 'Food', 'Lunch', 1);")
-cur.execute("INSERT INTO transactions (type,title,description,account_id) VALUES('income', 'Salary', 'March 19', 2);")
+cur.execute("INSERT INTO transaction (type,title,description,account_id) VALUES('expense', 'Food', 'Lunch', 1);")
+cur.execute("INSERT INTO transaction (type,title,description,account_id) VALUES('income', 'Salary', 'March 19', 2);")
 conn.commit()
 
 conn.close()
