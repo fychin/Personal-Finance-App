@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, DecimalField
+from wtforms.validators import DataRequired, InputRequired, ValidationError, Email, EqualTo
 from app.models import User
 
 class LoginForm(FlaskForm):
@@ -29,4 +29,11 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Please try another email address.')
 
+
+class EditAccountForm(FlaskForm):
+    id = HiddenField()
+    user_id = HiddenField()
+    name = StringField('Account Name', validators=[InputRequired()])
+    balance = DecimalField('Balance', validators=[InputRequired()])
+    submit = SubmitField('Update')
 

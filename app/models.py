@@ -49,4 +49,3 @@ class Transaction(db.Model):
     def __repr__(self):
         return '<Transaction {}, {}>'.format(self.type, self.title)
 
-

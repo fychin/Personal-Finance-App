@@ -7,11 +7,13 @@
         <tr>
             <th>Account</th>
             <th>Balance</th>
+            <th></th>
         </tr>
         {% for account in accounts %}
         <tr>
             <td><a href="#">{{ account.name }}</a></td>
             <td>{{ account.balance }}</td>
+            <td><a href="/account/{{ account.id }}/edit">Edit</a></a></td>
         </tr>
         {% endfor %}
     </table>

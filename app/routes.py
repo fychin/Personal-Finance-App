@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.models import User, Account
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, EditAccountForm
 
 @app.route('/')
 @app.route('/index')
@@ -63,3 +63,20 @@ def user(username):
     return render_template('user.html', user=user, accounts=accounts)
 
 
+@app.route('/account/<id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_account(id):
+    account = Account.query.filter_by(id=id).first_or_404()
+    form = EditAccountForm()
+    form.id.data = account.id
+    form.user_id.data = current_user.id
+    if form.validate_on_submit():
+        form.populate_obj(account)
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('index'))
+    elif request.method == 'GET':
+        form.name.data = account.name
+        form.balance.data = account.balance
+    return render_template('edit_account.html', title='Edit Account',
+    form=form)
