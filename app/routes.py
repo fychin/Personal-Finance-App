@@ -67,7 +67,7 @@ def user(username):
 @login_required
 def edit_account(id):
     account = Account.query.filter_by(id=id).first_or_404()
-    form = EditAccountForm()
+    form = EditAccountForm(account.name)
     form.id.data = account.id
     form.user_id.data = current_user.id
     if form.validate_on_submit():
@@ -80,3 +80,14 @@ def edit_account(id):
         form.balance.data = account.balance
     return render_template('edit_account.html', title='Edit Account',
     form=form)
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500

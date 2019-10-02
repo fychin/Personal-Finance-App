@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, DecimalField
 from wtforms.validators import DataRequired, InputRequired, ValidationError, Email, EqualTo
-from app.models import User
+from app.models import User, Account
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -37,3 +37,13 @@ class EditAccountForm(FlaskForm):
     balance = DecimalField('Balance', validators=[InputRequired()])
     submit = SubmitField('Update')
 
+    def __init__(self, original_account_name, *args, **kwargs):
+        super(EditAccountForm, self).__init__(*args, **kwargs)
+        self.original_account_name = original_account_name
+
+    def validate_name(self, account_name):
+        if account_name.data != self.original_account_name:
+            # attempt to find duplicates
+            account = Account.query.filter_by(name=self.name.data).first()
+            if account is not None:
+                raise ValidationError('Account name already exists.')
