@@ -3,13 +3,13 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.models import User, Account
-from app.forms import LoginForm, RegistrationForm, EditAccountForm
+from app.forms import LoginForm, RegistrationForm, EditAccountForm, CreateAccountForm
 
 @app.route('/')
 @app.route('/index')
 @login_required
 def index():
-    accounts = Account.query.all()
+    accounts = Account.query.filter_by(user_id=current_user.id).all()
     return render_template('index.html', title='Home', accounts=accounts)
 
 
@@ -63,13 +63,26 @@ def user(username):
     return render_template('user.html', user=user, accounts=accounts)
 
 
+@app.route('/account/create', methods=['GET', 'POST'])
+@login_required
+def create_account():
+    form = CreateAccountForm(current_user.id)
+    if form.validate_on_submit():
+        account = Account()
+        form.populate_obj(account)
+        db.session.add(account)
+        db.session.commit()
+        flash('Account \'{}\' has been created'.format(account.name))
+        return redirect(url_for('user', username=current_user.username))
+    return render_template('create_account.html', title='Create Account',
+    form=form)
+
+
 @app.route('/account/<id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_account(id):
     account = Account.query.filter_by(id=id).first_or_404()
-    form = EditAccountForm(account.name)
-    form.id.data = account.id
-    form.user_id.data = current_user.id
+    form = EditAccountForm(current_user.id, account)
     if form.validate_on_submit():
         form.populate_obj(account)
         db.session.commit()
@@ -81,13 +94,3 @@ def edit_account(id):
     return render_template('edit_account.html', title='Edit Account',
     form=form)
 
-
-@app.errorhandler(404)
-def not_found_error(error):
-    return render_template('404.html'), 404
-
-
-@app.errorhandler(500)
-def internal_error(error):
-    db.session.rollback()
-    return render_template('500.html'), 500

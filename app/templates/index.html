@@ -11,11 +11,13 @@
         </tr>
         {% for account in accounts %}
         <tr>
-            <td><a href="#">{{ account.name }}</a></td>
-            <td>{{ account.balance }}</td>
-            <td><a href="/account/{{ account.id }}/edit">Edit</a></a></td>
+            <td>{{ account.name }}</td>
+            <td>$ {{ '%.2f'|format(account.balance) }}</td>
+            <td><a href="{{ url_for('edit_account', id=account.id) }}">Edit</a></a></td>
         </tr>
         {% endfor %}
     </table>
+
+    <p><a href="{{ url_for('create_account') }}">+ Create New Account</a></p>
 
 {% endblock %}

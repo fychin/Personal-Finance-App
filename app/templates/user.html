@@ -12,7 +12,7 @@
         {% for account in accounts %}
         <tr>
             <td><a href="#">{{ account.name }}</a></td>
-            <td>$ {{ account.balance }}</td>
+            <td>$ {{ '%.2f'|format(account.balance) }}</td>
         </tr>
         {% endfor %}
     </table>
