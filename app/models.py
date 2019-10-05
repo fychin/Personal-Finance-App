@@ -8,7 +8,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(30), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     email = db.Column(db.String(20))
-    role = db.Column(db.String(8), default='user')
+    role = db.Column(db.Integer, db.ForeignKey('user_role.id'))
     accounts = db.relationship('Account', backref='user', lazy=True)
 
     def set_password(self, password):
@@ -40,12 +40,28 @@ class Account(db.Model):
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    type = db.Column(db.String(10), nullable=False)
     title = db.Column(db.String(30), nullable=False)
     description = db.Column(db.String(50))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    type_id = db.Column(db.Integer, db.ForeignKey('transaction_type.id'), nullable=False)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
  
     def __repr__(self):
         return '<Transaction {}, {}>'.format(self.type, self.title)
 
+
+class UserRole(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    role = db.Column(db.String(10), nullable=False)
+    
+    def __repr__(self):
+        return '<User Role: {}>'.format(self.name)
+    
+
+class TransactionType(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(15), nullable=False)
+    
+    def __repr__(self):
+        return '<Transaction Type: {}>'.format(self.name)
+    

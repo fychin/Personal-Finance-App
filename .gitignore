@@ -5,6 +5,6 @@ venv/
 *.pyc
 __pycache__/
 
-*.db
+*.db*
 
 *.swp
