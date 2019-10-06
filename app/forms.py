@@ -30,7 +30,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please try another email address.')
 
 
-class AccountForm(Form):
+class AccountForm(FlaskForm):
     user_id = HiddenField()
     name = StringField('Account Name', validators=[InputRequired()])
     balance = DecimalField('Balance', validators=[InputRequired()])

@@ -9,13 +9,19 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     email = db.Column(db.String(20))
     role = db.Column(db.Integer, db.ForeignKey('user_role.id'))
-    accounts = db.relationship('Account', backref='user', lazy=True)
+    accounts = db.relationship('Account', backref='user', lazy='dynamic')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
     
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def add_account(self, account):
+        self.accounts.append(account)
+
+    def get_num_accounts(self):
+        return self.accounts.filter(User.id == self.id).count()
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
