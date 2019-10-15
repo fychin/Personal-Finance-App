@@ -1,6 +1,6 @@
 import unittest
 from app import app, db
-from app.models import User, Account
+from app.models import Users, Account
 
 class UserAccountModelCase(unittest.TestCase):
     def setUp(self):
@@ -13,15 +13,15 @@ class UserAccountModelCase(unittest.TestCase):
         db.drop_all()
 
     def test_password_hashing(self):
-        u = User(username='testUser')
+        u = Users(username='testUser')
         u.set_password('testpassword')
         self.assertFalse(u.check_password('differentpassword'))
         self.assertTrue(u.check_password('testpassword'))
 
     def test_create_accounts(self):
         # create 2 users
-        u1 = User(username='testUser1')
-        u2 = User(username='testUser2')
+        u1 = Users(username='testUser1')
+        u2 = Users(username='testUser2')
         db.session.add_all([u1, u2])
         db.session.commit()
 

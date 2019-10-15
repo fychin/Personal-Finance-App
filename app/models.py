@@ -22,7 +22,7 @@ class Users(UserMixin, db.Model):
         self.accounts.append(account)
 
     def get_num_accounts(self):
-        return self.accounts.filter(User.id == self.id).count()
+        return self.accounts.filter(Users.id == self.id).count()
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
