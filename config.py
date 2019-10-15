@@ -5,7 +5,8 @@ class Config(object):
     SECRET_KEY = 'my_personalfinance_app'
     
     # Database settings
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'personalfinance.db')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    #SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'personalfinance.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Admin mail settings

@@ -50,10 +50,12 @@ class Transaction(db.Model):
     description = db.Column(db.String(50))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     type_id = db.Column(db.Integer, db.ForeignKey('transaction_type.id'), nullable=False)
+    amount = db.Column(db.Float)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
+    #transfer_account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=True)
  
     def __repr__(self):
-        return '<Transaction {}, {}>'.format(self.type, self.title)
+        return '<Transaction #{} - Acc: {}, {}>'.format(self.type_id, self.account_id, self.title)
 
 
 class UserRole(db.Model):
