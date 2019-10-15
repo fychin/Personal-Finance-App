@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm, Form
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, DecimalField
+from wtforms import (StringField, PasswordField, BooleanField, SubmitField, 
+    HiddenField, DecimalField, TextAreaField, SelectField)
 from wtforms.validators import DataRequired, InputRequired, ValidationError, Email, EqualTo
-from app.models import User, Account
+from app.models import Users, Account
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -25,7 +26,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Username taken. Please try another username.')
     
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
+        user = Users.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please try another email address.')
 
@@ -67,3 +68,13 @@ class EditAccountForm(AccountForm):
             if account is not None:
                 raise ValidationError('Account name already exists.')
 
+
+class TransactionForm(FlaskForm):
+    account_id = HiddenField()
+    title = StringField('Title', validators=[InputRequired()])
+    amount = DecimalField('Amount', validators=[InputRequired()])
+    description = TextAreaField('Description')
+    type_id = SelectField('Type', coerce=int)
+
+    def get_types(self):
+        pass

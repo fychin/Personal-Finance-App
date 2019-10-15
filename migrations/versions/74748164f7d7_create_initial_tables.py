@@ -1,8 +1,8 @@
-"""Create User, Account, Transaction, TransactionType, UserRole tables
+"""Create initial tables
 
-Revision ID: e29a36f0ad74
+Revision ID: 74748164f7d7
 Revises: 
-Create Date: 2019-10-05 16:18:49.473984
+Create Date: 2019-10-15 22:25:56.357435
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e29a36f0ad74'
+revision = '74748164f7d7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -28,7 +28,7 @@ def upgrade():
     sa.Column('role', sa.String(length=10), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('user',
+    op.create_table('users',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('username', sa.String(length=30), nullable=True),
     sa.Column('password_hash', sa.String(length=128), nullable=True),
@@ -37,13 +37,13 @@ def upgrade():
     sa.ForeignKeyConstraint(['role'], ['user_role.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
+    op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
     op.create_table('account',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(length=30), nullable=False),
     sa.Column('balance', sa.Float(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('transaction',
@@ -52,6 +52,7 @@ def upgrade():
     sa.Column('description', sa.String(length=50), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('type_id', sa.Integer(), nullable=False),
+    sa.Column('amount', sa.Float(), nullable=True),
     sa.Column('account_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['account_id'], ['account.id'], ),
     sa.ForeignKeyConstraint(['type_id'], ['transaction_type.id'], ),
@@ -66,8 +67,8 @@ def downgrade():
     op.drop_index(op.f('ix_transaction_timestamp'), table_name='transaction')
     op.drop_table('transaction')
     op.drop_table('account')
-    op.drop_index(op.f('ix_user_username'), table_name='user')
-    op.drop_table('user')
+    op.drop_index(op.f('ix_users_username'), table_name='users')
+    op.drop_table('users')
     op.drop_table('user_role')
     op.drop_table('transaction_type')
     # ### end Alembic commands ###

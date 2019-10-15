@@ -3,7 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import db, login_manager
 from flask_login import UserMixin
 
-class User(UserMixin, db.Model):
+class Users(UserMixin, db.Model):
+    # override table name to users for postgresql
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(30), index=True, unique=True)
     password_hash = db.Column(db.String(128))
@@ -30,14 +31,14 @@ class User(UserMixin, db.Model):
 # Flask-Login session management
 @login_manager.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    return Users.query.get(int(id))
 
 
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(30), nullable=False)
     balance = db.Column(db.Float, default=0.0)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     transactions = db.relationship('Transaction', backref='account', lazy=True)
 
     def __repr__(self):
@@ -52,7 +53,6 @@ class Transaction(db.Model):
     type_id = db.Column(db.Integer, db.ForeignKey('transaction_type.id'), nullable=False)
     amount = db.Column(db.Float)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
-    #transfer_account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=True)
  
     def __repr__(self):
         return '<Transaction #{} - Acc: {}, {}>'.format(self.type_id, self.account_id, self.title)

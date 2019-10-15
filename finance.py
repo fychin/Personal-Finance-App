@@ -1,10 +1,10 @@
 from app import app, db
-from app.models import User, Account, Transaction, UserRole, TransactionType
+from app.models import Users, Account, Transaction, UserRole, TransactionType
 from flask.cli import with_appcontext
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'User': User, 'Account': Account}
+    return {'db': db, 'User': Users, 'Account': Account}
 
 @app.cli.command(with_appcontext=True)
 def seed():
@@ -16,7 +16,7 @@ def seed():
     db.session.commit()
     
     # Create admin user
-    admin_user = User(username='admin', role=2, email='fyang.chin@gmail.com')
+    admin_user = Users(username='admin', role=2, email='fyang.chin@gmail.com')
     admin_user.set_password('admin')
     db.session.add(admin_user)
 
